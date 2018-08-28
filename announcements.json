@@ -2,9 +2,9 @@
     "announcements":[
         {
             "date": "04.23.2018",
-            "title": "Hooray",
-            "subtitle": "New server browser deployed",
-            "content": "Since the exisiting browser did not handle scale well, we've been scrambling to get something better in place. Today it went live. While not in it's final form, this one is far more responsive and loads significantly quicker.<br /><br />♥ ElDewrito",
+            "title": "Welcome to Reclaimed",
+            "subtitle": "SUBTITLE HERE",
+            "content": "Hello<br />World<br />❤️ The Guardians",
             "background": "dew://assets/announcements/welcome_01.jpg"           
         }
     ]
