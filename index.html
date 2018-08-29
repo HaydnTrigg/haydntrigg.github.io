@@ -1,167 +1,87 @@
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="utf-8" />
-    <title>Server Browser</title>
-		<!-- Includes -->
-		<script src="js/handlebars.min.js"></script>
-		<script src="js/jquery-1.11.3.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-		<!-- Bootstrap -->
-		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-		<script src="js/bootstrap.min.js"></script>
-		<!-- DataTables -->
-		<link rel="stylesheet" href="css/jquery.dataTables.min.css">
-		<script src="js/jquery.dataTables.min.js"></script>
-		<script src="js/mousetrap.min.js"></script>
-		<!-- Sweet Alert -->
-        <script src="js/sweetalert.min.js"></script> 
-        <link rel="stylesheet" type="text/css" href="css/sweetalert.css">       
-        <link rel="stylesheet" type="text/css" href="css/eldorito.css">    
-        <!-- Gamepad support -->
-        <script src="js/gamepad.js"></script>
-		<!-- Eldorito Stuff -->
-		<script src="js/dewRcon.js"></script>
-        <script src="js/friendServer.js"></script>
-		<!-- Custom stuff -->
-		<script src="js/browser.js"></script>
-		<link rel="stylesheet" href="css/browser.css">
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-        <link rel="icon" href="favicon.ico" type="image/x-icon">
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	<meta charset="utf-8">
+	<title>The Guardians</title>
+	<meta name="title" content="The Guardians" />
+	<meta name="description" content="Home of TagTool for Halo Online and the Reclaimed mod" />
+	<link rel="image_src" href="/images/meta_image.png" />
 
-          ga('create', 'UA-72472081-1', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <script>
-            var host = "scooterpsu.github.io";
-            if ((host == window.location.host) && (window.location.protocol != "http:"))
-                window.location.protocol = "http";
-        </script>
-</head>
-
-<body>
-	<h3 class="browserTitle">Server Browser</h3>
-	<h4 class="serverStats"><span class="playerCount">00 players</span>  /  <span class="serverCount">00 servers</span></h4>
-    <progress class="serverPool" value="0" max="100"></progress>
-    <button class="refresh" onclick="refreshTable();">Refresh</button>
-    <button class="quickMatch" onclick="quickMatch();">Quick Match</button>
-	<button class="closeButton" onclick="closeBrowser();">Close<img class="controllerButton" src="images/360_Back.png"></button>
-    <button class="togglePartyList" onClick="showPartyList();">Party</button>
-    <!--<div id="connectionStatus"></div>-->
-    <button class="howToServe" onclick="howToServe();">How To Host</button>
-    <table id="serverTable" class="display" width="100%"></table>
-    <div id="gamecard">
-    </div>
-    <div id="extBorder">
-    <div id="extBorder2">
-    </div>
-    </div>
-    <button class="browserSwitch feeltrain" onclick="switchBrowser('theFeelTrain');">Switch to theFeelTrain</button>
-    <button class="browserSwitch dewmenu" onclick="switchBrowser('DewMenu');">Switch to DewMenu</button>
+	<meta content="http://www.theguardians.io" property="og:url" />
+	<meta content="http://www.theguardians.io/images/meta_image.png" property="og:image" />
+	<link rel="shortcut icon" id="favicon" href="favicon.png"> 
+	<meta name="author" content="The Guardians">
+	<link rel="canonical" href="http://www.theguardians.io" />
+	
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Pacifico:400' rel='stylesheet' type='text/css'>
+	<link href='css/onepage-scroll.css' rel='stylesheet' type='text/css'>
+	<link href='css/theguardians.css' rel='stylesheet' type='text/css'>
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/jquery.onepage-scroll.js"></script>
+	<script type="text/javascript" src="js/theguardians.js"></script>
+	
+	<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <style>
     
-    <div id="partyBorder">
-        <div id="partyHeader">Party List<button class="addPartyMember" onClick="showOnline();">+</button><button class="toggleChat" onClick="showChat();">Chat</button></div>
-        <div id="allOnline"></div>
-        <div id="party">
-        </div>
-    </div>
-    
-    <div id="chatBorder">
-        <div id="chatHeader">Party Chat<button class="closeChat" onClick="showChat();">X</button></div>
-        <div id="chat">
-        </div>        
-        <form name="message" action="">
-            <input name="usermsg" type="text" autocomplete="off" id="messageBox" size="63" />
-            <input name="submitmsg" type="button" id="submitButton" value="Send" onclick="chatInput(this.form.messageBox.value)"/>
-        </form>
-    </div>
-    
-    <script id="gameinfo-template" type="text/x-handlebars-template">
-        <div id="cardheaderborder">
-            <div id="cardheader">
-                <div id="title"><b>{{capitalize variantType}} on {{map}}</b></div>
-                <img id="mappic" src="images/maps/{{lowerCase mapFile}}.png" onError="mapMatch(this, '{{mapFile}}');">
-                <img id="varpic" src="images/gametypes/{{lowerCase variantType}}.png">
-            </div>
-        </div>
-        <div id="scoreboard">
-            {{#if passworded}}
-                <b>Private Game</b>
-                {{else}}
-                    <div id="scoreBoardHeader">Scoreboard {{scoreBoardPlus}}</div>
-                    <table class="statBreakdown" style="{{scoreBoardHidden}}">
-                        <thead class="tableHeader">
-                            <th>Name</th>
-                            <th><center>Score</center></th>
-                            <th><center>K</center></th>
-                            <th><center>D</center></th>
-                            <th><center>A</center></th>
-                        </thead>
-                        <tbody>
-                            {{#eachByScore players}}
-                            {{#if name}}
-                            <tr>
-                                <td class="statLines">{{trimString this.name 0 100}}</td>
-                                <td class="statLines"><center>{{score}}</center></td>
-                                <td class="statLines"><center>{{kills}}</center></td>
-                                <td class="statLines"><center>{{deaths}}</center></td>
-                                <td class="statLines"><center>{{assists}}</center></td>
-                            </tr>
-                            {{/if}}
-                            {{/eachByScore}}
-                        </tbody>
-                    </table>
-                {{/if}}
-        </div>
-        <div id="gameinfoborder">
-            <div id="gameinfo">
-                <div id="host"><b>Host: </b>{{trimString hostPlayer 0 100}}</div>
-                <div id="name"><b>Name: </b>{{trimString name 0 100}}</div>
-                <div id="voip"><b>VoIP: </b>
-                    {{#if VoIP}} 
-                        Enabled
-                    {{else}}
-                        Disabled
-                    {{/if}}                             
-                </div>
-                <div id="sprint"><b>Sprint: </b>
-                    {{#ifCond sprintEnabled "1"}}
-                        {{#ifCond sprintUnlimitedEnabled "1"}}
-                            Unlimited
-                        {{else}}
-                            Enabled
-                        {{/ifCond}}  
-                    {{else}}
-                        Disabled
-                    {{/ifCond}}  
-                </div>
-                <div id="sprint"><b>Assassinations: </b>
-                    {{#ifCond assassinationEnabled "0"}}
-                        Disabled
-                    {{else}}
-                        Enabled
-                    {{/ifCond}}  
-                </div>
-                <div id="status"><b>Status: </b>
-                    {{#ifCond status "InGame"}}
-                        In Game
-                    {{else}}
-                        In Lobby
-                    {{/ifCond}}   
-                </div>
-                <div id="version"><b>Version: </b>{{eldewritoVersion}}</div>
-            </div>
-        </div>
+	</style>
+	<script>
+	  $(document).ready(function(){
+      $(".main").onepage_scroll({
+        sectionContainer: "section",
+        responsiveFallback: 600,
+        loop: true
+      });
+		});
+		
 	</script>
-    
-    <script>
-		var serverTemplateSource = $("#gameinfo-template").html();
-		var serverTemplate = Handlebars.compile(serverTemplateSource);
-	</script>    
+</head>
+<body>
+  <div class="wrapper">
+	  <div class="main">
+	    
+	  <section class="page1">
+        <div class="page_container">
+          <h1>The Guardians</h1>
+          <h2>TagTool and Reclaimed</h2>
+          <p class="credit">Special thanks for everyone who has contributed to blam research over the last <script>document.write(Math.ceil(Math.abs((new Date(Date.now())).getTime() - (new Date(2001, 11, 15)).getTime()) / (1000 * 3600 * 24 * 365)));</script> years your support has been invaluable.</p>
+          <p class="credit">TODO: Paragraph about leaks, viruses etc.</p>
+          <div class="btns">
+  	        <a class="reload btn" id="tagtool-btn" href="#">Download TagTool</a>
+  	        <a class="reload btn" id="reclaimed-btn" href="#">Download Reclaimed</a>
+  	      </div>
+          <p class="credit">Created with ❤️ The Guardians</a></p>
+  	    </div>
+      </section>
+      
+	    <section class="page2">
+	      <div class="page_container">
+          <h1>How to use?</h1>
+          <code class="html">
+Copy Reclaimed contents to halo_online\<br>
+Copy TagTool contents to halo_online\maps\<br>
+Copy Halo 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to halo_online\maps\halo3_retail<br>
+Copy Halo 3: ODST to halo_online\maps\halo3_retail<br>
+<br>
+The ordering of porting maps is important and different ordering will make multiplayer and co-op crash. Please follow this exact ordering. Please note that porting all of the content will take many hours.
+<br><br>
+Run the following commands below in TagTool:
+<br>
+opencachefile halo3_retail\maps\construct.map<br>
+PortTag Recursive Scripts MatchShaders *.scnr<br>
+exit<br>
+<br>
+opencachefile halo3_retail\maps\010_jungle.map<br>
+PortTag Recursive Scripts MatchShaders *.scnr<br>
+exit<br>
+<br>
+updatemapfiles halo3_retail\maps\info<br>
+updatemapfiles halo3odst_retail\maps\info<br>
+  	      </code>
+	      </div>
+      </section>
+    </div>
+  </div>
 </body>
 </html>
