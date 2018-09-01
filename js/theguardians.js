@@ -74,7 +74,7 @@ async function reclaimed_latest()
   }
 }
 
-async function setup_download_buttons()
+async function setup_tagtool_latest()
 {
 	var tagtool_info = await tagtool_latest();
 	var tagtool_btn = document.getElementById("tagtool-btn");
@@ -82,7 +82,10 @@ async function setup_download_buttons()
 	
 	tagtool_btn.innerHTML = tagtool_text;
 	tagtool_btn.href = tagtool_info.download_url;
-  
+}
+
+async function setup_reclaimed_latest()
+{
 	var reclaimed_info = await reclaimed_latest();
 	var reclaimed_btn = document.getElementById("reclaimed-btn");
 	var reclaimed_text = `Download ${reclaimed_info.name} ${reclaimed_info.version}`;
@@ -91,6 +94,5 @@ async function setup_download_buttons()
 	reclaimed_btn.href = reclaimed_info.download_url;
 }
 
-
-
-setup_download_buttons().then(console.log).catch(console.error)
+setup_tagtool_latest().then(console.log).catch(console.error)
+setup_reclaimed_latest().then(console.log).catch(console.error)

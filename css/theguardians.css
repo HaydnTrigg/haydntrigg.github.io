@@ -349,3 +349,22 @@ body.disabled-onepage-scroll .main section.page3 .page_container {
   }
 
 }
+
+@media (max-height: 600px) {
+
+	.main section .page_container
+	{
+		position: relative;
+		margin: 0 auto 0;
+		max-width: 950px;
+		z-index: 3;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+  
+  .page2 .page_container
+  {
+    display: inline-block;
+  }
+
+}
