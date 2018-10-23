@@ -25,7 +25,7 @@ async function tagtool_latest()
 {
   try {
     
-    const json = await getJSON('https://api.github.com/repos/TheGuardians-CI/TagTool/releases/latest');
+    const json = await getJSON('https://api.github.com/repos/TheGuardians-CI/TagTool-Releases/releases/latest');
     
     const name = "TagTool";
     const version = json.name.replace('tagtool-', '');
@@ -95,4 +95,4 @@ async function setup_reclaimed_latest()
 }
 
 setup_tagtool_latest().then(console.log).catch(console.error)
-setup_reclaimed_latest().then(console.log).catch(console.error)
+//setup_reclaimed_latest().then(console.log).catch(console.error)
